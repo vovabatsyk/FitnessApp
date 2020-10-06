@@ -5,7 +5,8 @@ namespace Fitness.BL.Model
     /// <summary>
     /// User
     /// </summary>
-    class User
+    [Serializable]
+    public class User
     {
         #region Methods
 
@@ -53,7 +54,7 @@ namespace Fitness.BL.Model
                 throw new ArgumentNullException(nameof(name), "Empty Name");
             }
 
-            if (Gender == null)
+            if (gender == null)
             {
                 throw new ArgumentNullException(nameof(gender), "Gender don't be a null");
             }
