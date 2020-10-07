@@ -19,7 +19,9 @@ namespace Fitness.BL.Controller
         /// <summary>
         /// Current User
         /// </summary>
+       
         public User CurrentUser { get; }
+        
         /// <summary>
         /// Is New User
         /// </summary>
@@ -48,13 +50,42 @@ namespace Fitness.BL.Controller
             }
         }
 
+        /// <summary>
+        /// Set New User Data
+        /// </summary>
+        /// <param name="gender">User gender</param>
+        /// <param name="birthDate">User birthDate</param>
+        /// <param name="weight">User weight</param>
+        /// <param name="height">User height</param>
         public void SetNewUserData(string gender, DateTime birthDate, double weight = 1, double height = 1)
         {
-           CurrentUser.Gender = new Gender(gender);
-           CurrentUser.BirthDate = birthDate;
-           CurrentUser.Weight = weight;
-           CurrentUser.Height = height;
-           Save();
+            CurrentUser.Gender = new Gender(gender);
+            CurrentUser.BirthDate = birthDate;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+            Save();
+        }
+
+        /// <summary>
+        /// Load User Data
+        /// </summary>
+        /// <returns>User App</returns>
+        private List<User> GetUsersData()
+        {
+            var formatter = new BinaryFormatter();
+
+            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
+            {
+                if (fs.Length > 0 && formatter.Deserialize(fs) is List<User> users)
+                {
+                    return users;
+                }
+                else
+                {
+                    return new List<User>();
+                }
+            }
+
         }
 
         /// <summary>
@@ -68,28 +99,6 @@ namespace Fitness.BL.Controller
             {
                 formatter.Serialize(fs, Users);
             }
-        }
-
-        /// <summary>
-        /// Load User Data
-        /// </summary>
-        /// <returns>User App</returns>
-        private List<User> GetUsersData()
-        {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (formatter.Deserialize(fs) is List<User> users)
-                {
-                    return users;
-                }
-                else
-                {
-                    return new List<User>();
-                }
-            }
-
         }
 
     }
