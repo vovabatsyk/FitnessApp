@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.Globalization;
+using System.Resources;
 using Fitness.BL.Controller;
 using Fitness.BL.Model;
 
@@ -7,11 +9,14 @@ namespace Fitness.CMD
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("\tWelcome to Fitness Application");
+            var culture = Culture("ru_Ru");
+            var resourceManager = ResourceManager();
 
-            Console.WriteLine("Your Name ");
+            Console.WriteLine($@"	{resourceManager.GetString("Hello", culture)}");
+
+            Console.Write($@"{resourceManager.GetString("EnterYourName", culture)}: ");
             var name = Console.ReadLine();
 
             var userController = new UserController(name);
@@ -19,11 +24,11 @@ namespace Fitness.CMD
 
             if (userController.IsNewUser)
             {
-                Console.WriteLine("Your Gender ");
+                Console.Write($@"{resourceManager.GetString("EnterYourGender", culture)}: ");
                 var gender = Console.ReadLine();
                 DateTime birthDate = ParseDate();
-                var weight = ParseDouble("Your Weight");
-                var height = ParseDouble("Your Height");
+                var weight = ParseDouble(resourceManager.GetString("EnterYourWeight", culture));
+                var height = ParseDouble(resourceManager.GetString("EnterYourHeight", culture));
 
                 userController.SetNewUserData(gender, birthDate, height, weight);
             }
@@ -31,25 +36,26 @@ namespace Fitness.CMD
             Console.WriteLine(userController.CurrentUser);
             Console.WriteLine();
 
-            Console.WriteLine("What do you want to do?");
-            Console.WriteLine("'E' - eating");
+            Console.WriteLine(@"What do you want to do?");
+            Console.WriteLine(@"'E' - eating");
             var key = Console.ReadKey();
             if (key.Key == ConsoleKey.E)
             {
                 Console.WriteLine();
-               var foods = StartEating();
-               foreach (var item in eatingController.Eating.Foods)
-               {
-                   Console.WriteLine($"\t{item.Key} - {item.Value}");
-               }
+                var foods = StartEating();
+                eatingController.Add(foods.Food, foods.Weight);
+                foreach (var item in eatingController.Eating.Foods)
+                {
+                    Console.WriteLine($@"	{item.Key} - {item.Value}");
+                }
             }
 
 
         }
 
-        private static (Food Food,  double Weight) StartEating()
+        private static (Food Food, double Weight) StartEating()
         {
-            Console.Write("Enter product name  ");
+            Console.Write($@"{ResourceManager().GetString("EnterProductName")}: ");
             var foodName = Console.ReadLine();
             var weight = ParseDouble(" Product weight");
             var calories = ParseDouble(" Calories");
@@ -58,7 +64,7 @@ namespace Fitness.CMD
             var carbohydrates = ParseDouble(" Carbohydrates");
             var food = new Food(foodName, calories, proteins, fats, carbohydrates);
 
-            return (Food:food,Weight: weight);
+            return (Food: food, Weight: weight);
         }
 
         /// <summary>
@@ -70,14 +76,14 @@ namespace Fitness.CMD
         {
             while (true)
             {
-                Console.WriteLine($" {name.ToUpper()} ");
+                Console.WriteLine($@" {name} ");
                 if (double.TryParse(Console.ReadLine(), out double value))
                 {
                     return value;
                 }
                 else
                 {
-                    Console.WriteLine($"Wrong {name} Format");
+                    Console.WriteLine(ResourceManager().GetString("WrongFormat"));
                 }
             }
         }
@@ -89,16 +95,21 @@ namespace Fitness.CMD
         {
             while (true)
             {
-                Console.WriteLine("Your BirthDate {dd.MM.yyyy} ");
+
+                Console.WriteLine(ResourceManager().GetString("EnterYourBirthDate") + @" {dd.MM.yyyy}");
                 if (DateTime.TryParse(Console.ReadLine(), out DateTime value))
                 {
                     return value;
                 }
                 else
                 {
-                    Console.WriteLine("Wrong Data Format");
+                    Console.WriteLine(ResourceManager().GetString("WrongFormat"));
                 }
             }
         }
+
+        public static CultureInfo Culture(string culture) => CultureInfo.CreateSpecificCulture(culture);
+
+        public static ResourceManager ResourceManager() => new ResourceManager("Fitness.CMD.Languages.Messages", typeof(Program).Assembly);
     }
 }

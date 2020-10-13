@@ -2,10 +2,10 @@
 
 namespace Fitness.BL.Model
 {
-    [Serializable]
     /// <summary>
     /// Food
     /// </summary>
+    [Serializable]
     public class Food
     {
         #region Methods
