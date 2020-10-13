@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Fitness.BL.Model
 {
+    [Serializable]
     /// <summary>
     /// Eating Food 
     /// </summary>

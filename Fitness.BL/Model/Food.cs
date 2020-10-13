@@ -2,6 +2,7 @@
 
 namespace Fitness.BL.Model
 {
+    [Serializable]
     /// <summary>
     /// Food
     /// </summary>
