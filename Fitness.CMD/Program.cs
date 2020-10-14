@@ -21,12 +21,13 @@ namespace Fitness.CMD
 
             var userController = new UserController(name);
             var eatingController = new EatingController(userController.CurrentUser);
+            var exerciseController = new ExerciseController(userController.CurrentUser);
 
             if (userController.IsNewUser)
             {
                 Console.Write($@"{resourceManager.GetString("EnterYourGender", culture)}: ");
                 var gender = Console.ReadLine();
-                DateTime birthDate = ParseDate();
+                DateTime birthDate = ParseDate("birth date {dd.mm.yyyy}");
                 var weight = ParseDouble(resourceManager.GetString("EnterYourWeight", culture));
                 var height = ParseDouble(resourceManager.GetString("EnterYourHeight", culture));
 
@@ -36,20 +37,55 @@ namespace Fitness.CMD
             Console.WriteLine(userController.CurrentUser);
             Console.WriteLine();
 
-            Console.WriteLine(@"What do you want to do?");
-            Console.WriteLine(@"'E' - eating");
-            var key = Console.ReadKey();
-            if (key.Key == ConsoleKey.E)
+            while (true)
             {
-                Console.WriteLine();
-                var foods = StartEating();
-                eatingController.Add(foods.Food, foods.Weight);
-                foreach (var item in eatingController.Eating.Foods)
+                Console.WriteLine(@"What do you want to do?");
+                Console.WriteLine(@"'E' - eating");
+                Console.WriteLine(@"'A' - enter exercise");
+                Console.WriteLine(@"'Q' - exit");
+
+                var key = Console.ReadKey();
+                switch (key.Key)
                 {
-                    Console.WriteLine($@"	{item.Key} - {item.Value}");
+                    case ConsoleKey.E:
+                        Console.WriteLine();
+                        var foods = StartEating();
+                        eatingController.Add(foods.Food, foods.Weight);
+                        foreach (var item in eatingController.Eating.Foods)
+                        {
+                            Console.WriteLine($@"	{item.Key} - {item.Value}");
+                        }
+                        break;
+                    case ConsoleKey.A:
+                        Console.WriteLine();
+                        var exercise = StartExercise();
+                        exerciseController.Add(exercise.activity,exercise.begin,exercise.end);
+                        foreach (var item in exerciseController.Exercises)
+                        {
+                            Console.WriteLine($@"	{item.Activity} from {item.Start.ToShortTimeString()} to {item.Finish.ToShortTimeString()}");
+                        }
+                        break;
+
+                    case ConsoleKey.Q:
+                        Environment.Exit(0);
+                        break;
                 }
+
+                Console.WriteLine();
             }
 
+
+        }
+
+        private static (DateTime begin, DateTime end, Activity activity) StartExercise()
+        {
+            Console.WriteLine(@"Enter Exercise Name");
+            var name = Console.ReadLine();
+            var energy = ParseDouble("Energy Consumption per Minute");
+            var begin = ParseDate("Start Exercise");
+            var end = ParseDate("Finish Exercise");
+            var activity = new Activity(name, energy);
+            return (begin, end, activity);
 
         }
 
@@ -91,15 +127,15 @@ namespace Fitness.CMD
         /// Parse BirthDay
         /// </summary>
         /// <returns></returns>
-        public static DateTime ParseDate()
+        public static DateTime ParseDate(string value)
         {
             while (true)
             {
 
-                Console.WriteLine(ResourceManager().GetString("EnterYourBirthDate") + @" {dd.MM.yyyy}");
-                if (DateTime.TryParse(Console.ReadLine(), out DateTime value))
+                Console.WriteLine($@"Enter {value}");
+                if (DateTime.TryParse(Console.ReadLine(), out DateTime birthDate))
                 {
-                    return value;
+                    return birthDate;
                 }
                 else
                 {
