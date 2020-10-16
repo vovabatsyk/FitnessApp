@@ -75,6 +75,7 @@ namespace Fitness.CMD
             }
 
 
+            // ReSharper disable once FunctionNeverReturns
         }
 
         private static (DateTime begin, DateTime end, Activity activity) StartExercise()

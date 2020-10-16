@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using Fitness.BL.Model;
 
 namespace Fitness.BL.Controller
@@ -12,11 +10,6 @@ namespace Fitness.BL.Controller
     /// </summary>
     public class UserController : BaseController
     {
-        /// <summary>
-        /// Users File Name
-        /// </summary>
-        private const string USERS_FILE_NAME = "users.dat";
-
         /// <summary>
         /// User App
         /// </summary>
@@ -75,14 +68,14 @@ namespace Fitness.BL.Controller
         /// Load User Data
         /// </summary>
         /// <returns>User App</returns>
-        private List<User> GetUsersData() => Load<List<User>>(USERS_FILE_NAME) ?? new List<User>();
+        private List<User> GetUsersData() => Load<User>() ?? new List<User>();
 
         /// <summary>
         /// Save User Data
         /// </summary>
         public void Save()
-        {
-            Save(USERS_FILE_NAME, Users);
+        { 
+           Save(Users);
         }
 
     }

@@ -10,10 +10,12 @@ namespace Fitness.BL.Model
     {
         #region Methods
 
+        public int Id { get; set; }
+
         /// <summary>
         /// Name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gender
@@ -87,6 +89,7 @@ namespace Fitness.BL.Model
             Weight = weight;
             Height = height;
         }
+            public User() {}
 
             public User(string name)
             {

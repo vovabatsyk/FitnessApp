@@ -8,12 +8,14 @@ namespace Fitness.BL.Model
     [Serializable]
     public class Food
     {
-        #region Methods
 
-        public string Name { get; }
-        public double Proteins { get; }
-        public double Fats { get; }
-        public double Carbohydrates { get; }
+        #region Methods
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+        public double Proteins { get; set; }
+        public double Fats { get; set; }
+        public double Carbohydrates { get; set; }
         public double Calories { get; set; }
         private double CaloriesOnOneGram => Calories / 100.0;
         private double ProteinsOnOneGram => Proteins / 100.0;
@@ -27,6 +29,7 @@ namespace Fitness.BL.Model
         /// </summary>
         /// <param name="name">Food Name</param>
         public Food(string name) : this(name, 0, 0, 0, 0) { }
+        public Food() { }
 
         /// <summary>
         /// Create Food with Name, Proteins,Fats and Carbohydrates

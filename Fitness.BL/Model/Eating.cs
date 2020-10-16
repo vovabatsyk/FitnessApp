@@ -10,21 +10,23 @@ namespace Fitness.BL.Model
     [Serializable]
     public class Eating
     {
+        public int Id { get; set; }
+
         /// <summary>
         /// Mealtime
         /// </summary>
-        public DateTime Mealtime { get; }
+        public DateTime Mealtime { get; set; }
 
         /// <summary>
         /// Amount of Food
         /// </summary>
-        public Dictionary<Food, double> Foods { get; }
+        public Dictionary<Food, double> Foods { get; set; }
 
         /// <summary>
         /// Food User
         /// </summary>
-        public User User { get; }
-
+        public virtual User User { get; set; }
+        public int UserId { get; set; }
         /// <summary>
         /// Constructor Eating (User)
         /// </summary>
@@ -35,6 +37,7 @@ namespace Fitness.BL.Model
             Mealtime = DateTime.UtcNow;
             Foods = new Dictionary<Food, double>();
         }
+        public Eating() {}
 
         /// <summary>
         /// Add Food

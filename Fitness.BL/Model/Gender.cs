@@ -8,10 +8,12 @@ namespace Fitness.BL.Model
     [Serializable]
     public class Gender
     {
+        public int Id { get; set; }
+
         /// <summary>
         /// Name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Create New Gender
@@ -25,6 +27,7 @@ namespace Fitness.BL.Model
             }
             Name = name;
         }
+        public Gender() {}
 
         public override string ToString()
         {
