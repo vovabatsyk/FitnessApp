@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.Generic;
+using System.Linq;
 using Fitness.BL.Model;
 
 namespace Fitness.BL.Controller
@@ -8,51 +8,74 @@ namespace Fitness.BL.Controller
     /// <summary>
     /// User Controller
     /// </summary>
-    public class UserController
+    public class UserController : BaseController
     {
         /// <summary>
         /// User App
         /// </summary>
-        public User User { get; }
+        public List<User> Users { get; }
+        /// <summary>
+        /// Current User
+        /// </summary>
+
+        public User CurrentUser { get; }
+
+        /// <summary>
+        /// Is New User
+        /// </summary>
+        public bool IsNewUser { get; } = false;
 
         /// <summary>
         /// Create User Controller
         /// </summary>
-        /// <param name="user">User</param>
-        public UserController(string userName, string genderName, DateTime birthDate, double weight, double height)
+        /// <param name="userName">User</param>
+        public UserController(string userName)
         {
-            var gender = new Gender(genderName);
-            User = new User(userName, gender, birthDate, weight, height);
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException(nameof(userName), "Empty User Name");
+            }
+
+            Users = GetUsersData();
+            CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
+
+            if (CurrentUser == null)
+            {
+                CurrentUser = new User(userName);
+                Users.Add(CurrentUser);
+                IsNewUser = true;
+                Save();
+            }
         }
 
         /// <summary>
-        /// Save User Data
+        /// Set New User Data
         /// </summary>
-        public void Save()
+        /// <param name="gender">User gender</param>
+        /// <param name="birthDate">User birthDate</param>
+        /// <param name="weight">User weight</param>
+        /// <param name="height">User height</param>
+        public void SetNewUserData(string gender, DateTime birthDate, double weight = 1, double height = 1)
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, User);
-            }
+            CurrentUser.Gender = new Gender(gender);
+            CurrentUser.BirthDate = birthDate;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+            Save();
         }
 
         /// <summary>
         /// Load User Data
         /// </summary>
         /// <returns>User App</returns>
-        public UserController()
-        {
-            var formatter = new BinaryFormatter();
+        private List<User> GetUsersData() => Load<User>() ?? new List<User>();
 
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (formatter.Deserialize(fs) is User user)
-                {
-                    User = user;
-                }
-            }
+        /// <summary>
+        /// Save User Data
+        /// </summary>
+        public void Save()
+        { 
+           Save(Users);
         }
 
     }

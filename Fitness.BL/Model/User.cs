@@ -10,20 +10,22 @@ namespace Fitness.BL.Model
     {
         #region Methods
 
+        public int Id { get; set; }
+
         /// <summary>
         /// Name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gender
         /// </summary>
-        public Gender Gender { get; }
+        public Gender Gender { get; set; }
 
         /// <summary>
         /// BirthDate
         /// </summary>
-        public DateTime BirthDate { get; }
+        public DateTime BirthDate { get; set; }
 
         /// <summary>
         /// Weight
@@ -34,6 +36,11 @@ namespace Fitness.BL.Model
         /// Height
         /// </summary>
         public double Height { get; set; }
+
+        /// <summary>
+        /// User Age
+        /// </summary>
+        public int Age => DateTime.Now.Year - BirthDate.Year;
 
         #endregion
 
@@ -82,7 +89,22 @@ namespace Fitness.BL.Model
             Weight = weight;
             Height = height;
         }
+            public User() {}
 
-        public override string ToString() => $"Name: {Name}, gender: {Gender.Name}, birthdate: {BirthDate}, weight: {Weight}, height: {Height}\n";
+            public User(string name)
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentNullException(nameof(name), "Empty User Name");
+                }
+
+                Name = name;
+            }
+
+        //public override string ToString() => $"Name: {Name}, gender: {Gender.Name}, age: {Age}, weight: {Weight}, height: {Height}\n";
+        public override string ToString()
+        {
+            return $"Name: {Name}\tAge: {Age}";
+        }
     }
 }
